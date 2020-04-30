@@ -1,4 +1,4 @@
-# QA
+# QACLI
 This simple question answering program uses [node-question-answering](https://github.com/huggingface/node-question-answering),
 combined with Python to answer open questions based on Wikipedia text as a reference point.
 
@@ -30,3 +30,19 @@ Answer: pre-historic times with 83% certainty
 You can use more data from wikipedia by modifying `extractWikiData.py`.
 One simple way to do this would be to add to the array of pages, e.g.
 `pages = ["Gold","Oil","Gas","Raw material","Farming","Fishing","Mining","Market economy"]`
+
+***
+
+# QAWeb
+Similar to QACLI but instead of answering questions through the CLI questions are asked and answered on a website.
+Question and answers are not saved to a dictionary in this version, however this will be implemented in future versions.
+
+## Prerequisites
+Same as QACLI plus more:
+* [Express](https://expressjs.com/)
+* [EJS](https://ejs.co/) 
+
+## Quickstart 
+1. install all the modules using npm
+2. install the model
+3. run ``node app.js`` and goto ``https://localhost:5000``
