@@ -1,0 +1,10 @@
+2020-04-30 21:40:03.282168: I tensorflow/core/platform/cpu_feature_guard.cc:142] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+2020-04-30 21:40:03.295792: I tensorflow/core/platform/profile_utils/cpu_utils.cc:94] CPU Frequency: 3499820000 Hz
+2020-04-30 21:40:03.296136: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x3a34c90 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
+2020-04-30 21:40:03.296156: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version
+2020-04-30 21:40:25.106122: I tensorflow/cc/saved_model/reader.cc:31] Reading SavedModel from: /home/daniel/Documents/Node.js/ExpressFormTest/.models/distilbert-cased
+2020-04-30 21:40:25.113000: I tensorflow/cc/saved_model/reader.cc:54] Reading meta graph with tags { serve }
+2020-04-30 21:40:25.146911: I tensorflow/cc/saved_model/loader.cc:202] Restoring SavedModel bundle.
+2020-04-30 21:40:25.292258: W tensorflow/core/framework/cpu_allocator_impl.cc:81] Allocation of 89075712 exceeds 10% of system memory.
+2020-04-30 21:40:25.387094: I tensorflow/cc/saved_model/loader.cc:151] Running initialization op on SavedModel bundle at path: /home/daniel/Documents/Node.js/ExpressFormTest/.models/distilbert-cased
+2020-04-30 21:40:25.445112: I tensorflow/cc/saved_model/loader.cc:311] SavedModel load for tags { serve }; Status: success. Took 338988 microseconds.
