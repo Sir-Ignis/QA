@@ -1,0 +1,4 @@
+Node server is running..
+Rendering: index page
+QUERY: Answer: 440 tonnes with 15% certainty
+I/O: Reading file data/Gold.txt

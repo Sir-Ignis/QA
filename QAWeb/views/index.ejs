@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>QA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="index.css">
+</head>
+<body>
+<div class="row">
+  <div class="item">
+  <form action="/myform" method="post">
+      <div class="sub-row"><label for="fName">Filename:</label></div>
+      <div class="sub-row"><input type="text" name="fileName" required /></div>
+      <div class="sub-row"><label for="question">Question:</label></div>
+      <div class="sub-row"><input type="text" name="question" required /></div>
+      <div class="sub-row" style="padding-top:15px;"><button type="submit">Query</button></div>
+  </form>
+  </div>
+  <div class="item">
+    <p style="width:60ch;">
+      <div class="row" style="padding-top:10px;">
+        <strong style="padding-right:0.5ch;">Question:</strong> <%=data.q%>
+      </div>
+      <div class="row" style="padding-top:10px;">
+        <strong style="padding-right:0.5ch;">Answer:</strong> <%=data.answer%>
+      </div>
+      <div class="row"><p><%=data.sysmsgs%></p></div>
+    </p>
+  </div>
+</div>
+<div class="item">
+  <div class="row"><h3>Reference Text</h3></div>
+  <div class="row"><div class="textbox"><%=data.reftext%></p></div></div>
+</div>
+<div class="item">
+<div class="row"><h3>Log</h3></div>
+<div class="row">
+    <div class="textbox-small">
+      <p>
+      <%if (data.logs != null) {%>
+        <%for(var i=0; i<data.logs.length-1; i++) {%>
+        <%=i%>  : <%=data.logs[i] %><br>
+        <% } %>
+      <%}%>
+      </p>
+    </div>
+  </div>
+</div>
+</body>
+</html>
