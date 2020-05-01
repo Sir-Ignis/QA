@@ -15,10 +15,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 const LOGS = "logs/log-file.txt";
 const DIR = 'data/'
 const pythonProcess = spawn('python',["scripts/extractWikiData.py"]);
-
+var files = fs.readdirSync(DIR);
 
 app.get('/', async function (req, res) {
-    var data = {reftext:null,q:null,answer:null,sysmsgs:null,logs:null};
+    var data = {reftext:null,q:null,answer:null,sysmsgs:null,logs:null,files:files};
     console.log("Rendering: index page");
     res.render('index',{data:data});
 });
@@ -31,14 +31,14 @@ app.post('/myform', async function(req, res){
       logs = fs.readFileSync(LOGS,"utf8");
       logs = logs.split(/\r?\n/);
       var answer = await qa.main(fileName, question);
-      var data = {reftext:qa.fetchText(fileName),q:question,answer:await Object.values(answer)[0],sysmsgs:null,logs:logs}
+      var data = {reftext:qa.fetchText(fileName),q:question,answer:await Object.values(answer)[0],sysmsgs:null,logs:logs,files:files}
       res.render('index', {data:data});
     } else {
       logs = fs.readFileSync(LOGS,"utf8");
       logs = logs.split(/\r?\n/);
       var msg = "ERROR: file '"+fileName+"' does not exist!"
       console.log(msg);
-      var data = {reftext:null,q:null,answer:null,sysmsgs:msg,logs:logs}
+      var data = {reftext:null,q:null,answer:null,sysmsgs:msg,logs:logs,files:files}
       res.render('index', {data:data});
     }
 });
