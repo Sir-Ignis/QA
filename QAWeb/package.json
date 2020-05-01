@@ -3,18 +3,35 @@
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
+<<<<<<< HEAD
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "preinstall": "npx question-answering download",
     "run": "node app.js"
+=======
+  "engines": {
+    "node": "12.16.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "preinstall": "npx question-answering download",
+    "run": "node app.js",
+    "start": "node app.js"
+>>>>>>> QAWebTest/master
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
+<<<<<<< HEAD
     "child_process": "^1.0.2",
     "ejs": "^3.1.2",
     "express": "^4.17.1",
+=======
+    "express": "^4.17.1",
+    "child_process": "^1.0.2",
+    "ejs": "^3.1.2",
+>>>>>>> QAWebTest/master
     "question-answering": "^2.0.1"
   }
 }

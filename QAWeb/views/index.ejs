@@ -6,10 +6,61 @@
     <title>QA</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Roboto&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="index.css">
+<<<<<<< HEAD
+=======
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+    <script>
+      function help() {
+        if(document.getElementById("help").style.display === "none") {
+          document.getElementById("help").style.display = "block";
+        } else {
+          document.getElementById("help").style.display = "none";
+        }
+      }
+      function toggle() {
+        var e = document.getElementsByClassName('btn');
+        for(i = 0; i < e.length; i++) {
+          if(e[i].style.display!="none" && e[i].style.display!=null){
+            e[i].style.display = "none";
+          }else{
+            e[i].style.display = "inline";
+          }
+        }
+      }
+      function toggleView(id, view) {
+        view ? document.getElementById(id).style.display = 'block' : document.getElementById(id).style.display = 'none';
+      }
+      function toggleViewMult(names, view) {
+        var e = document.getElementsByClassName(names);
+        for(i = 0; i < e.length; i++) {
+          if(view){e[i].display = "none";}else{e[i].display = "block";}
+        }
+      }
+      function standard() {
+        Cookies.set('Standard', true);
+        Cookies.set('Debug', false);
+        toggleView('logs',false);
+      }
+      function debug() {
+        Cookies.set('Standard', false);
+        Cookies.set('Debug', true);
+        toggleView('logs',true);
+      }
+      $(function() {
+        if (Cookies.get('Standard') == 'true') {
+          standard();
+        } else if (Cookies.get('Debug') == 'true') {
+          debug();
+        }
+      });
+    </script>
+>>>>>>> QAWebTest/master
 </head>
 <body>
 <div class="row">
   <div class="item">
+<<<<<<< HEAD
   <form action="/myform" method="post">
       <div class="sub-row"><label for="fName">Filename:</label></div>
       <div class="sub-row"><input type="text" name="fileName" required /></div>
@@ -18,6 +69,22 @@
       <div class="sub-row" style="padding-top:15px;"><button type="submit">Query</button></div>
   </form>
   </div>
+=======
+  <form id="Form" action="/myform" method="post">
+      <div class="sub-row"><label for="fName">Filename:</label></div>
+      <div class="sub-row"><input id="fileName" type="text" name="fileName" required /></div>
+      <div class="sub-row"><label for="question">Question:</label></div>
+      <div class="sub-row"><input type="text" name="question" required /></div>
+      <div class="sub-row" style="padding-top:15px;">
+        <button type="submit">Query</button>
+        <span style="padding-right: 20px;"></span>
+      </div>
+  </form>
+  <button style="width: 85px; position: relative; left:112px; bottom: 35px;" onclick="toggle()">
+    <span style="position: relative; right: 5px;">Options</span>
+  </button>
+</div>
+>>>>>>> QAWebTest/master
   <div class="item">
     <p style="width:60ch;">
       <div class="row" style="padding-top:10px;">
@@ -26,15 +93,52 @@
       <div class="row" style="padding-top:10px;">
         <strong style="padding-right:0.5ch;">Answer:</strong> <%=data.answer%>
       </div>
+<<<<<<< HEAD
+=======
+      <div style="padding: 20px 0 20px 0;">
+        <button style="display:none;" class="btn" onclick="standard()">Standard</button>
+        <span style="padding-right: 20px;"></span>
+        <button style="display:none;" class="btn" onclick="debug()">Debug</button>
+        <span style="padding-right: 20px;"></span>
+        <button style="display:none;" class="btn" onclick="help()">Help</button>
+      </div>
+>>>>>>> QAWebTest/master
       <div class="row"><p><%=data.sysmsgs%></p></div>
     </p>
   </div>
 </div>
+<<<<<<< HEAD
 <div class="item">
   <div class="row"><h3>Reference Text</h3></div>
   <div class="row"><div class="textbox"><%=data.reftext%></p></div></div>
 </div>
 <div class="item">
+=======
+<div class="item" id="help" style="display:none;">
+  <p>
+    Valid file names: <br/><br/>
+    <%if (data.files != null) {%>
+      <%for(var i=0; i<data.files.length; i++) {%>
+      <%=i%>.   <%=data.files[i] %><br/>
+      <% } %>
+    <%} else {%>
+      ERROR: no files!
+    <%}%>
+    <br>
+    To view logs press "Debug" to view debugging information.</br>
+    To return to standard mode press "Standard".<br/>
+    <br><br>
+    Debug Mode<br><br>
+    In this view you can see the console logs below logs.<br>
+    This mode is intended only for developers.<br>
+  </p>
+</div>
+<div class="item" id="ref">
+  <div class="row"><h3>Reference Text</h3></div>
+  <div class="row"><div class="textbox"><%=data.reftext%></p></div></div>
+</div>
+<div class="item" id="logs">
+>>>>>>> QAWebTest/master
 <div class="row"><h3>Log</h3></div>
 <div class="row">
     <div class="textbox-small">
