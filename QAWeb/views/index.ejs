@@ -9,6 +9,20 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
     <script>
+      function setViewMode() {
+        if(document.getElementById('standard').checked) {
+          standard();
+        }else if(document.getElementById('minimalist').checked) {
+          minimalist();
+        }else if(document.getElementById('debug').checked) {
+          debug();
+        }
+      }
+      function clearCookies() {
+        Cookies.remove('Minimalist');
+        Cookies.remove('Standard');
+        Cookies.remove('Debug');
+      }
       function help() {
         if(document.getElementById("help").style.display === "none") {
           document.getElementById("help").style.display = "block";
@@ -17,14 +31,11 @@
         }
       }
       function toggle() {
-        var e = document.getElementsByClassName('btn');
-        for(i = 0; i < e.length; i++) {
-          if(e[i].style.display!="none" && e[i].style.display!=null){
-            e[i].style.display = "none";
-          }else{
-            e[i].style.display = "inline";
-          }
-        }
+        document.getElementById("errorMsg").style.display = "none";
+        var viewOptions = document.getElementById("view-options").style.display;
+        var inputOptions
+        viewOptions === "none" ? document.getElementById("view-options").style.display = "block" : document.getElementById("view-options").style.display = "none";
+        viewOptions === "none" ? document.getElementById("input-options").style.display = "block" : document.getElementById("input-options").style.display = "none";
       }
       function toggleView(id, view) {
         view ? document.getElementById(id).style.display = 'block' : document.getElementById(id).style.display = 'none';
@@ -35,14 +46,29 @@
           if(view){e[i].display = "none";}else{e[i].display = "block";}
         }
       }
+      function minimalist() {
+        Cookies.set('Minimalist', true);
+        Cookies.set('Standard', false);
+        Cookies.set('Debug', false);
+        toggleView('ref',false);
+        toggleView('logs',false);
+      }
       function standard() {
         Cookies.set('Standard', true);
         Cookies.set('Debug', false);
+        Cookies.set('Minimalist', false);
+        <%if (data.reftext != null) {%>
+        toggleView('ref',true);
+        <%} else {%>
+        toggleView('ref',false);
+        <%}%>
         toggleView('logs',false);
       }
       function debug() {
-        Cookies.set('Standard', false);
         Cookies.set('Debug', true);
+        Cookies.set('Standard', false);
+        Cookies.set('Minimalist', false);
+        toggleView('ref',true);
         toggleView('logs',true);
       }
       $(function() {
@@ -50,16 +76,23 @@
           standard();
         } else if (Cookies.get('Debug') == 'true') {
           debug();
+        } else if (Cookies.get('Minimalist') == 'true') {
+          minimalist();
         }
       });
+      $("#Form").submit(function(event){
+        loadAjax();
+        event.preventDefault()
+      })
     </script>
 </head>
-<body>
+<body onload="standard()" onunload="clearCookies()">
+<div class="col">
 <div class="row">
   <div class="item">
   <form id="Form" action="/myform" method="post">
-      <div class="sub-row"><label for="fName">Filename:</label></div>
-      <div class="sub-row"><input id="fileName" type="text" name="fileName" required /></div>
+      <div class="sub-row"><label for="fileName">Filename:</label></div>
+      <div class="sub-row"><input id="fileName" type="text" name="fileName" value="<%=form.fileName%>" required ></div>
       <div class="sub-row"><label for="question">Question:</label></div>
       <div class="sub-row"><input type="text" name="question" required /></div>
       <div class="sub-row" style="padding-top:15px;">
@@ -73,23 +106,38 @@
 </div>
   <div class="item">
     <p style="width:60ch;">
+      <%if (data.answer != null){%>
       <div class="row" style="padding-top:10px;">
         <strong style="padding-right:0.5ch;">Question:</strong> <%=data.q%>
       </div>
       <div class="row" style="padding-top:10px;">
         <strong style="padding-right:0.5ch;">Answer:</strong> <%=data.answer%>
       </div>
-      <div style="padding: 20px 0 20px 0;">
-        <button style="display:none;" class="btn" onclick="standard()">Standard</button>
-        <span style="padding-right: 20px;"></span>
-        <button style="display:none;" class="btn" onclick="debug()">Debug</button>
-        <span style="padding-right: 20px;"></span>
-        <button style="display:none;" class="btn" onclick="help()">Help</button>
+      <%}%>
+      <div id="view-options" style="padding: 10px 0 20px 0; display: none;">
+          <h3 style="margin-top: 5px;">View Mode</h3>
+          <input type="radio" id="standard" name="view-mode" value="standard">
+          <label for="male">Standard</label><br>
+          <input type="radio" id="minimalist" name="view-mode" value="minimalist">
+          <label for="female">Minimalist</label><br>
+          <input type="radio" id="debug" name="view-mode" value="debug">
+          <label for="other">Debug</label>
+          <div style="padding-top:18px;"></span>
+          <button style="display:block;" onclick="setViewMode()">Set</button>
+          </div>
       </div>
-      <div class="row"><p><%=data.sysmsgs%></p></div>
+      <div id="errorMsg">
+      <%if (data.sysmsgs != null) {%>
+        <h3 style="margin: 0; padding-top: 15px;">Error Message</h3>
+        <div class="row"><p><%=data.sysmsgs%></p></div>
+      <%}%>
+      </div>
     </p>
   </div>
 </div>
+</div>
+
+<div class="col">
 <div class="item" id="help" style="display:none;">
   <p>
     Valid file names: <br/><br/>
@@ -109,10 +157,21 @@
     This mode is intended only for developers.<br>
   </p>
 </div>
-<div class="item" id="ref">
-  <div class="row"><h3>Reference Text</h3></div>
-  <div class="row"><div class="textbox"><%=data.reftext%></p></div></div>
 </div>
+<div class="col">
+<div class="item" id="ref" style="display:none; padding-top: 0;">
+  <div class="row"><h3>Reference Text</h3></div>
+  <div class="row"><div class="textbox">
+    <p>
+      <%if (data.reftext != null) {%>
+        <%-data.reftext%>
+      <%}%>
+    </p>
+  </div></div>
+</div>
+</div>
+
+<div class="col">
 <div class="item" id="logs">
 <div class="row"><h3>Log</h3></div>
 <div class="row">
@@ -126,6 +185,7 @@
       </p>
     </div>
   </div>
+</div>
 </div>
 </body>
 </html>

@@ -19,11 +19,12 @@ var files = fs.readdirSync(DIR);
 
 app.get('/', async function (req, res) {
     var data = {reftext:null,q:null,answer:null,sysmsgs:null,logs:null,files:files};
+    var form = {fileName: req.body.fileName};
     console.log("Rendering: index page");
-    res.render('index',{data:data});
+    res.render('index',{data:data,form:form});
 });
 
-app.post('/myform', async function(req, res){
+app.post('/myform', async function(req, res, next){
     var fileName = req.body.fileName;
     var question = req.body.question;
     var log = "";
@@ -31,15 +32,18 @@ app.post('/myform', async function(req, res){
       logs = fs.readFileSync(LOGS,"utf8");
       logs = logs.split(/\r?\n/);
       var answer = await qa.main(fileName, question);
-      var data = {reftext:qa.fetchText(fileName),q:question,answer:await Object.values(answer)[0],sysmsgs:null,logs:logs,files:files}
-      res.render('index', {data:data});
+      var reftext = JSON.stringify(qa.fetchText(fileName));
+      reftext = reftext.replace(/(\\n)+/g, '<br /><br />');
+      var data = {reftext:reftext,q:question,answer:await Object.values(answer)[0],sysmsgs:null,logs:logs,files:files}
+      var form = {fileName: fileName};
+      res.render('index', {data:data,form:form});
     } else {
       logs = fs.readFileSync(LOGS,"utf8");
       logs = logs.split(/\r?\n/);
       var msg = "ERROR: file '"+fileName+"' does not exist!"
       console.log(msg);
       var data = {reftext:null,q:null,answer:null,sysmsgs:msg,logs:logs,files:files}
-      res.render('index', {data:data});
+      res.render('index', {data:data,form:form});
     }
 });
 
