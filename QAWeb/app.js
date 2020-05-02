@@ -25,12 +25,17 @@ var files = fs.readdirSync(DIR);
 
 app.get('/', async function (req, res) {
     var data = {reftext:null,q:null,answer:null,sysmsgs:null,logs:null,files:files};
+<<<<<<< HEAD
+>>>>>>> QAWebTest/master
+||||||| merged common ancestors
+=======
+    var form = {fileName: req.body.fileName};
 >>>>>>> QAWebTest/master
     console.log("Rendering: index page");
-    res.render('index',{data:data});
+    res.render('index',{data:data,form:form});
 });
 
-app.post('/myform', async function(req, res){
+app.post('/myform', async function(req, res, next){
     var fileName = req.body.fileName;
     var question = req.body.question;
     var log = "";
@@ -39,11 +44,22 @@ app.post('/myform', async function(req, res){
       logs = logs.split(/\r?\n/);
       var answer = await qa.main(fileName, question);
 <<<<<<< HEAD
+<<<<<<< HEAD
       var data = {reftext:qa.fetchText(fileName),q:question,answer:await Object.values(answer)[0],sysmsgs:null,logs:logs}
 =======
       var data = {reftext:qa.fetchText(fileName),q:question,answer:await Object.values(answer)[0],sysmsgs:null,logs:logs,files:files}
 >>>>>>> QAWebTest/master
       res.render('index', {data:data});
+||||||| merged common ancestors
+      var data = {reftext:qa.fetchText(fileName),q:question,answer:await Object.values(answer)[0],sysmsgs:null,logs:logs,files:files}
+      res.render('index', {data:data});
+=======
+      var reftext = JSON.stringify(qa.fetchText(fileName));
+      reftext = reftext.replace(/(\\n)+/g, '<br /><br />');
+      var data = {reftext:reftext,q:question,answer:await Object.values(answer)[0],sysmsgs:null,logs:logs,files:files}
+      var form = {fileName: fileName};
+      res.render('index', {data:data,form:form});
+>>>>>>> QAWebTest/master
     } else {
       logs = fs.readFileSync(LOGS,"utf8");
       logs = logs.split(/\r?\n/);
@@ -53,8 +69,14 @@ app.post('/myform', async function(req, res){
       var data = {reftext:null,q:null,answer:null,sysmsgs:msg,logs:logs}
 =======
       var data = {reftext:null,q:null,answer:null,sysmsgs:msg,logs:logs,files:files}
+<<<<<<< HEAD
 >>>>>>> QAWebTest/master
       res.render('index', {data:data});
+||||||| merged common ancestors
+      res.render('index', {data:data});
+=======
+      res.render('index', {data:data,form:form});
+>>>>>>> QAWebTest/master
     }
 });
 

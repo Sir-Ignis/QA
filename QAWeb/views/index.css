@@ -26,9 +26,18 @@ p, li {
 
 .row {
     display: flex; /* establish flex container */
-    flex-direction: row; /* make main axis horizontal (default value) */
+    flex-direction: row;
     justify-content: left;
     align-items: left;
+    width: 100%;
+}
+
+.col {
+  display: flex; /* establish flex container */
+  flex-direction: column;
+  justify-content: left;
+  align-items: left;
+  width: 100%;
 }
 
 .col-2 {

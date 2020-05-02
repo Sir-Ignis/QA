@@ -1,4 +1,6 @@
 Node server is running..
 Rendering: index page
-QUERY: Answer: 440 tonnes with 15% certainty
-I/O: Reading file data/Gold.txt
+QUERY: Answer: 1980 with 0% certainty
+I/O: Reading file data/Oil.txt
+QUERY: Answer: 10 US gallons with 0% certainty
+I/O: Reading file data/Oil.txt
