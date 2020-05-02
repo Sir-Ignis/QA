@@ -6,8 +6,7 @@
     <title>QA</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Roboto&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="index.css">
-<<<<<<< HEAD
-=======
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
     <script>
@@ -87,13 +86,13 @@
         event.preventDefault()
       })
     </script>
->>>>>>> QAWebTest/master
+
 </head>
 <body onload="standard()" onunload="clearCookies()">
 <div class="col">
 <div class="row">
   <div class="item">
-<<<<<<< HEAD
+
   <form action="/myform" method="post">
       <div class="sub-row"><label for="fName">Filename:</label></div>
       <div class="sub-row"><input type="text" name="fileName" required /></div>
@@ -102,7 +101,7 @@
       <div class="sub-row" style="padding-top:15px;"><button type="submit">Query</button></div>
   </form>
   </div>
-=======
+
   <form id="Form" action="/myform" method="post">
       <div class="sub-row"><label for="fileName">Filename:</label></div>
       <div class="sub-row"><input id="fileName" type="text" name="fileName" value="<%=form.fileName%>" required ></div>
@@ -117,7 +116,7 @@
     <span style="position: relative; right: 5px;">Options</span>
   </button>
 </div>
->>>>>>> QAWebTest/master
+
   <div class="item">
     <p style="width:60ch;">
       <%if (data.answer != null){%>
@@ -127,23 +126,21 @@
       <div class="row" style="padding-top:10px;">
         <strong style="padding-right:0.5ch;">Answer:</strong> <%=data.answer%>
       </div>
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
+
       <div style="padding: 20px 0 20px 0;">
         <button style="display:none;" class="btn" onclick="standard()">Standard</button>
         <span style="padding-right: 20px;"></span>
         <button style="display:none;" class="btn" onclick="debug()">Debug</button>
         <span style="padding-right: 20px;"></span>
         <button style="display:none;" class="btn" onclick="help()">Help</button>
-||||||| merged common ancestors
+
       <div style="padding: 20px 0 20px 0;">
         <button style="display:none;" class="btn" onclick="standard()">Standard</button>
         <span style="padding-right: 20px;"></span>
         <button style="display:none;" class="btn" onclick="debug()">Debug</button>
         <span style="padding-right: 20px;"></span>
         <button style="display:none;" class="btn" onclick="help()">Help</button>
-=======
+
       <%}%>
       <div id="view-options" style="padding: 10px 0 20px 0; display: none;">
           <h3 style="margin-top: 5px;">View Mode</h3>
@@ -162,32 +159,27 @@
         <h3 style="margin: 0; padding-top: 15px;">Error Message</h3>
         <div class="row"><p><%=data.sysmsgs%></p></div>
       <%}%>
->>>>>>> QAWebTest/master
+
       </div>
-<<<<<<< HEAD
->>>>>>> QAWebTest/master
+
       <div class="row"><p><%=data.sysmsgs%></p></div>
-||||||| merged common ancestors
+
       <div class="row"><p><%=data.sysmsgs%></p></div>
-=======
->>>>>>> QAWebTest/master
+
     </p>
   </div>
 </div>
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 <div class="item">
   <div class="row"><h3>Reference Text</h3></div>
   <div class="row"><div class="textbox"><%=data.reftext%></p></div></div>
 </div>
 <div class="item">
-=======
-||||||| merged common ancestors
-=======
+
 </div>
 
 <div class="col">
->>>>>>> QAWebTest/master
+
 <div class="item" id="help" style="display:none;">
   <p>
     Valid file names: <br/><br/>
@@ -223,7 +215,7 @@
 
 <div class="col">
 <div class="item" id="logs">
->>>>>>> QAWebTest/master
+
 <div class="row"><h3>Log</h3></div>
 <div class="row">
     <div class="textbox-small">
