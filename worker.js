@@ -19,18 +19,12 @@ function start() {
   // Connect to the named work queue
   let workQueue = new Queue('work', REDIS_URL);
   let answerQueue = new Queue('answer', REDIS_URL);
-  console.log("test");
   workQueue.process(maxJobsPerWorker, async (job) => {
     job.progress(100);
-    result = qa.main(Object.values(job.data)[0],Object.values(job.data)[1]);
-    console.log("result:"+result);
-    const ans = await answerQueue.add({answer: result, id: job.id});
-    console.log("answer id:"+ans.id);
-  try{
-    console.log("answer: "+Object.values(ans.data));
-  }catch (err) {
-    console.log(err);
-  }
+    const result = await qa.main(Object.values(job.data)[0],Object.values(job.data)[1]);
+    const answer = Object.values(result)[0];
+    const ans = await answerQueue.add({answer: answer, id: job.id});
+    console.log("result id: "+job.id+" answer: "+answer+" answer id:"+ans.id+" answer: "+ans.data.answer);
     return result;
   });
   answerQueue.process(maxJobsPerWorker, async(job) => {

@@ -43,8 +43,7 @@ async function updateJobs() {
     if(jobs[id].state === "completed" && jobs[id].answer === "?") {
       let res = await fetch(`/job/answer/${id}`);
       let answer = await res.json();
-      let ans = Object.values(answer)[1].split(':')[1].split(',')[0].slice(1,-1);
-      result.answer = ans;
+      result.answer = answer.answer;
       updated = true;
     }
     if (!!jobs[id] && updated) {
@@ -112,5 +111,5 @@ function checkForUpdate() {
 window.onload = function() {
   document.querySelector("#add-job").addEventListener("click", addJob);
   document.querySelector("#clear").addEventListener("click", clear);
-  setInterval(checkForUpdate, 2000);
+  setInterval(checkForUpdate, 3500);
 };

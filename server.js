@@ -14,7 +14,6 @@ app.use(bodyParser.json());
 // Create / Connect to a named work queue
 let workQueue = new Queue('work', REDIS_URL);
 let answerQueue = new Queue('answer', REDIS_URL);
-let questionAnswer = "";
 
 // Serve the two static assets
 app.get('/', (req, res) => res.sendFile('index.html', { root: __dirname }));
@@ -58,13 +57,13 @@ app.get('/job/answer/:id', async (req, res) => {
     console.log("error! job = null");
     res.status(404).end();
   } else {
-    const data = job.data;
-    res.json({id, questionAnswer});
+    const answer = Object.values(job.data)[0];
+    console.log("answer: "+answer);
+    res.json({id, answer});
   }
 });
 
 workQueue.on('global:completed', (jobId, result) => {
-  questionAnswer = result;
   console.log(`Job completed with result ${result}`);
   /*workQueue.getJob(jobId).then(function(job) {
   console.log(`Removing job#${jobId}`);
