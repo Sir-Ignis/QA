@@ -31,20 +31,25 @@ let job = await fetch('/job', {
 // Fetch updates for each job
 async function updateJobs() {
   for (let id of Object.keys(jobs)) {
+    let result = null;
+    let updated = false;
+    if(jobs[id].answer === "?") {
     let res = await fetch(`/job/${id}`);
-    let result = await res.json();
+    result = await res.json();
     result.question = jobs[id].question;
     result.answer = jobs[id].answer;
+    updated = true;
+    }
     if(jobs[id].state === "completed" && jobs[id].answer === "?") {
       let res = await fetch(`/job/answer/${id}`);
       let answer = await res.json();
       let ans = Object.values(answer)[1].split(':')[1].split(',')[0].slice(1,-1);
       result.answer = ans;
+      updated = true;
     }
-    if (!!jobs[id]) {
+    if (!!jobs[id] && updated) {
       jobs[id] = result;
     }
-    console.log(id+" = "+jobs[id].answer);
     render();
   }
 }
@@ -90,9 +95,22 @@ async function renderJob(job) {
     .replace('{{progress}}', progress);
 }
 
+
+function checkForUpdate() {
+  let update = false;
+  for (let id of Object.keys(jobs)) {
+    if(jobs[id].answer === "?") {
+      update = true;
+    }
+  }
+  if(update === true) {
+    updateJobs();
+  }
+}
+
 // Attach click handlers and kick off background processes
 window.onload = function() {
   document.querySelector("#add-job").addEventListener("click", addJob);
   document.querySelector("#clear").addEventListener("click", clear);
-  setInterval(updateJobs, 200);
+  setInterval(checkForUpdate, 2000);
 };
