@@ -98,5 +98,5 @@ function checkForUpdate() {
 window.onload = function() {
   document.querySelector("#add-job").addEventListener("click", addJob);
   document.querySelector("#clear").addEventListener("click", clear);
-  setInterval(checkForUpdate, 5000);
+  setInterval(checkForUpdate, 20000);
 };
