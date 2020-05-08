@@ -7,6 +7,7 @@ let PORT = process.env.PORT || '5000';
 let REDIS_URL = process.env.REDIS_URL || 'redis://127.0.0.1:6379';
 
 let app = express();
+app.disable('etag');
 
 var bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
