@@ -25,32 +25,21 @@ let job = await fetch('/job', {
 .catch(error => console.log('Error:', error));
 
   jobs[job.id] = {id: job.id, question: job.question, answer: "?"};
-  render();
 }
 
-// Fetch updates for each job
-async function updateJobs() {
-  for (let id of Object.keys(jobs)) {
-    let result = null;
-    let updated = false;
-    if(jobs[id].answer === "?") {
-    let res = await fetch(`/job/${id}`);
-    result = await res.json();
-    result.question = jobs[id].question;
-    result.answer = jobs[id].answer;
-    updated = true;
-    }
-    if(jobs[id].state === "completed" && jobs[id].answer === "?") {
-      let res = await fetch(`/job/answer/${id}`);
-      let answer = await res.json();
-      result.answer = answer.answer;
-      updated = true;
-    }
-    if (!!jobs[id] && updated) {
-      jobs[id] = result;
-    }
-    render();
+async function updateJob(id) {
+  let result = null;
+  let res = await fetch(`/job/${id}`);
+  result = await res.json();
+  result.question = jobs[id].question;
+  result.answer = jobs[id].answer;
+
+  if(result.state === "completed") {
+    let res = await fetch(`/job/answer/${id}`);
+    let answer = await res.json();
+    result.answer = answer.answer;
   }
+  jobs[id] = result;
 }
 
 // Delete all stored jobs
@@ -95,21 +84,19 @@ async function renderJob(job) {
 }
 
 
+// Fetch updates for each job and render view
 function checkForUpdate() {
-  let update = false;
   for (let id of Object.keys(jobs)) {
     if(jobs[id].answer === "?") {
-      update = true;
+      updateJob(id);
     }
   }
-  if(update === true) {
-    updateJobs();
-  }
+  render();
 }
 
 // Attach click handlers and kick off background processes
 window.onload = function() {
   document.querySelector("#add-job").addEventListener("click", addJob);
   document.querySelector("#clear").addEventListener("click", clear);
-  setInterval(checkForUpdate, 3500);
+  setInterval(checkForUpdate, 5000);
 };
