@@ -1,0 +1,23 @@
+
+*******
+*FILES*
+*******
+Farming.txt
+Fishing.txt
+Gas.txt
+Gold.txt
+Mining.txt
+Oil.txt
+Raw material.txt
+Choose a file: [s[2K[0GChoose a file: g[17G^C
+Choose a file: ^C
+Choose a file: ^C
+Choose a file: ^C
+Choose a file: ^C
+Choose a file: ^C
+Choose a file: ^C
+Choose a file: ^C
+Choose a file: ^C
+Choose a file: 
+Choose a file: 
+Choose a file: 
