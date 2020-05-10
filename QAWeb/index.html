@@ -1,0 +1,44 @@
+<!<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Question Answering</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://www.herokucdn.com/purple3/latest/purple3.min.css">
+  <script src="client.js" async></script>
+</head>
+<body class="bg-near-white">
+  <script type="text/template" id="job-template">
+    <div class="flex flex-column ma2">
+      <div class="flex justify-between mb2">
+        <div class='mt2 mb1'><span class="hk-label">Question:</span> {{question}}</div>
+      </div>
+      <div class="w-100 br1 shadow-inner-1 bg-light-silver">
+        <span class="db h1 br1 {{color}}" style="width: {{progress}}%;"></span>
+      </div>
+    </div>
+    <div class='mt2 mb1' style="position: relative; down: 100px; left:15px;" ><span class="hk-label">Answer:</span> {{answer}}</div>
+  </script>
+  <div class="main-content flex flex-column justify-center items-center w-100 mt4">
+    <div class='br2 flex flex-column items-center pv3'>
+      <div class='f1 mt2 mb1' id="answer" style="padding-bottom: 20px;"></div>
+      <div class='flex mt2'>
+        <form id="questionForm">
+        <label for="fileName">Filename:</label>
+        <input style="width: 230px;" id="fileName" type="text" name="fileName" value="" required >
+        <div style="padding-top: 15px"></div>
+        <label for="question">Question:</label>
+        <input style="width: 230px;" id="question" type="text" name="question" required />
+      </form>
+    </div>
+    <div style="flex: 1; flex-direction: row; padding:30px 0 30px 0;">
+    <a style="display:inline;" href='#' id="add-job" class='f2 link black ph2 pv1 ba b--black br1 mr4'>Add Job</a>
+    <a style="display:inline;" href='#' id="clear" class='f2 link black ph2 pv1 ba b--black br1'>Clear</a>
+    </div>
+    <div id="job-summary" class="w-80 f3" style="width: 300px;"></div>
+    <div class="h6 flex flex-column justify-end">
+    </div>
+  </div>
+</body>
+</html>
