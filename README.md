@@ -11,12 +11,10 @@ so if the same question is asked again the system does not have to recompute the
 * [tfjs](https://github.com/tensorflow/tfjs)
 * [node-question-answering](https://github.com/huggingface/node-question-answering)
 
-## Quickstart 
+## Quickstart
 ```
-npm install question-answering@latest
-npx question-answering download
-py extractWikiData.py
-node QuestionAnswerer.js 
+npm install
+npm start
 ```
 ## Demo
 
@@ -40,9 +38,8 @@ Question and answers are not saved to a dictionary in this version, however this
 ## Prerequisites
 Same as QACLI plus more:
 * [Express](https://expressjs.com/)
-* [EJS](https://ejs.co/) 
+* [EJS](https://ejs.co/)
 
-## Quickstart 
-1. install all the modules using npm
-2. install the model
-3. run ``node app.js`` and goto ``https://localhost:5000``
+## Quickstart
+1. run ``npm install``
+2. run ``npm start`` and goto ``https://localhost:5000``
