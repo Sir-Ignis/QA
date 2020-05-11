@@ -1,8 +1,2 @@
-<<<<<<< HEAD
 */.models
 */node_modules
-||||||| merged common ancestors
-=======
-node_modules
-.models
->>>>>>> QA-Workers/master

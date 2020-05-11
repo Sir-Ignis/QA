@@ -2,7 +2,7 @@ import wikipedia
 import os.path
 
 DIR = "data/";
-pages = ["Gold","Oil","Gas","Raw material","Farming","Fishing","Mining"]
+pages = ["Gold","Oil","Gas","Raw material","Farming","Fishing","Mining","Wheat","Sugar","Trade","Money","Crude oil", "Tax","Stock market", "Stock exchange", "Short (finance)", "Option (finance)"]
 
 #downloads all wiki pages in pages array
 #unless they are already in data dir

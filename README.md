@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # QACLI
 This simple question answering program uses [node-question-answering](https://github.com/huggingface/node-question-answering),
 combined with Python to answer open questions based on Wikipedia text as a reference point.
@@ -44,7 +43,6 @@ Same as QACLI plus more:
 ## Quickstart
 1. run ``npm install``
 2. run ``npm start`` and goto ``https://localhost:5000``
-||||||| merged common ancestors
 =======
 # QA with Background Workers in Node.js with Redis
 
@@ -56,4 +54,3 @@ kind of reference to the answer even if it hasn't been
 calculated. The view is updated periodically so as to
 ensure that if the user spam clicks the add job button
 then we can display the correct view.
->>>>>>> QA-Workers/master
