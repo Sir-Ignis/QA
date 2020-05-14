@@ -1,5 +1,5 @@
 /**
-@version 0.1.1
+@version 0.1.2
 @author Sir-Ignis
 
 This is an open domain question answering (ODQA)
@@ -14,6 +14,7 @@ const util = require('util');
 const DIR = 'data/txt/';
 const PATH = 'data/dict.json';
 const prompt = require('prompt-sync')();
+const {PythonShell} = require('python-shell');
 const { program } = require('commander');
 
 let MODE = "default";
@@ -27,46 +28,121 @@ const STAR_TRAIL = "***************";
 //holds question (key) and answers (value) pairs
 let dict = {};
 
+/*
+PythonShell.run('extractWikiData.py', options, function (err, results) {
+  console.log('here5');
+    if (err) {reject(err); throw err;}
+    // results is an array consisting of messages collected during execution
+    console.log('script results:');
+    results.forEach(function (item, index) {
+      console.log(item, index);
+    });
+  console.log('here6');
+});
+resolve("resolved")*/
+
+//help
 program
-  .option('-s, --standard', 'standard option')
-  .option('-a, --advanced', 'advanced option')
+  .option('-s, --standard', 'standard option', false)
+  .option('-a, --advanced', 'advanced option', false)
   .option('-m, --mode <type>', 'question answering mode', MODE)
   .option('-tf, --tensorflow <boolean>', 'show/hide tensorflow output', HIDE_TF_OUTPUT)
   .option('-rt, --referencetext <boolean>', 'show/hide reference text', SHOW_REF_TEXT)
   .option('-mac, --minanscert <number>', 'minimum answer certainty', MIN_ANS_CERT)
   .option('-sac, --showanscert <boolean>', 'show/hide answer certainty', SHOW_CERT)
+  .option('-h, --help', 'prints command argument info', false)
+  .option('-d, --download <name>', 'downloads a wikipedia page called <name>', null)
   .parse(process.argv);
 
 /****************
  * Entry point
  ***************/
+ (async () => {
+  if(process.argv.length > 0) {
+    try {
+      await initialize();
+    } catch(err) {
+      console.log(err);
+    }
+  }
+  console.log(TF_MSG);
+  const { QAClient } = require("question-answering");
+  console.log(STAR_TRAIL);
+  if(HIDE_TF_OUTPUT) {
+    console.clear();
+  }
 
-if(process.argv.length > 0) {
-  initialize();
-}
-
-console.log(TF_MSG);
-const { QAClient } = require("question-answering");
-console.log(STAR_TRAIL);
-if(HIDE_TF_OUTPUT) {
-  console.clear();
-}
-
-main();
+  main();
+})();
 
 /****************/
+
+async function callPythonScript() {
+  let messages = []
+  let options = {
+      mode: 'text',
+      pythonPath: '/home/daniel/anaconda3/bin/python3',
+      pythonOptions: ['-u'], // get print results in real-time
+      scriptPath: 'scripts/',
+      args: [program.download]
+  };
+
+  let pyshell = new PythonShell('extractWikiData.py',options);
+
+  pyshell.on('message', function (message) {
+    console.log("[python output]: "+message);
+  });
+
+  // end the input stream and allow the process to exit
+  pyshell.end(function (err,code,signal) {
+    if (err) {throw err;}
+    console.log('The exit code was: ' + code);
+    console.log('The exit signal was: ' + signal);
+    console.log('finished');
+  });
+
+
+  return new Promise((resolve, reject) => {
+      pyshell.on('message', message  => {
+        messages.push(message);
+      });
+      pyshell.end(err => {
+        if(err) reject(err);
+        resolve(messages);
+      });
+  });
+}
 
 
 /**
  * initializes the program options
  */
-function initialize() {
+async function initialize() {
+  if(program.help === true) {
+    await help();
+  }
   if (program.standard) {
-    standardOptions();
+    await standardOptions();
   }
   if(program.advanced) {
-    advancedOptions()
+    await advancedOptions();
   }
+  if(program.download != null) {
+    await callPythonScript();
+    prompt("\nPress enter to continue...");
+  }
+}
+
+/**
+ * prints command line arg info
+ */
+function help() {
+  const fileData = fs.readFileSync(DIR + "CommandOptions.txt", "utf8");
+  const text = fileData;
+  console.clear();
+  console.log('\n'+text+'\n');
+  prompt('Press enter to continue...');
+  return Promise.resolve();
 }
 
 /**
@@ -84,6 +160,7 @@ function standardOptions() {
   if (program.referencetext) {
     program.referencetext === "false" ? SHOW_REF_TEXT = false : SHOW_REF_TEXT = true;
   }
+  return Promise.resolve();
 }
 
 /**
@@ -101,6 +178,7 @@ function advancedOptions() {
   if(program.showanscert) {
     program.showanscert === "true" ? SHOW_CERT = true : SHOW_CERT = false;
   }
+  return Promise.resolve();
 }
 
 /**

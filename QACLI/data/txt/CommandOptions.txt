@@ -1,0 +1,38 @@
+****************************COMMAND LINE OPTIONS****************************
+
+All the flags are optional. The default is no flags, which
+will start the program with default options.
+
+**************FLAG**************  **************DESCRIPTION**************
+-h --help                         prints command argument info
+
+-s --standard                     configure the program's standard
+                                  options
+
+-a --advanced                     configure the program's advanced
+                                  options
+
+-d --downloads <name>             downloads the wikipedia page with name
+                                  as a txt file
+
+
+*******STANDARD OPTIONS*******                      ***
+-m --mode <type>                  the question answering mode, currently
+                                  only supported modes are "default" and
+                                  "file"
+
+-tf --tensorflow <boolean>        if true hides tensorflow output otherwise
+                                  shows tensorflow output
+
+
+-rf --referencetext <boolean>     if true shows reference text output otherwise
+                                  hides reference text output
+
+
+*******ADVANCED OPTIONS*******                      ***
+-mac --minanscert <number>        the minimum answer certainty as a percentage
+                                  for the question and answer pair to be added
+                                  to the dictionary
+
+-sac --showanscert                shows the answer certainty if true otherwise
+                                  hides it

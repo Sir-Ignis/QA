@@ -6,10 +6,8 @@ Probable answers, i.e. answers with >70% certainty and their corresponding quest
 so if the same question is asked again the system does not have to recompute the answer.
 
 ## Prerequisites
-* [python](https://github.com/python/cpython)
+* [npm](https://www.npmjs.com/)
 * [nodejs](https://nodejs.org/en/)
-* [tfjs](https://github.com/tensorflow/tfjs)
-* [node-question-answering](https://github.com/huggingface/node-question-answering)
 
 ## Quickstart
 ```
@@ -24,27 +22,26 @@ Enter your question: since when has mining been an activity?
 Answer: pre-historic times with 83% certainty
 ```
 
+## Command line flags
+Type `scripts/QuestionAnswerer.js -h` to get info about using command line flags.
+
 ## Using other data
-You can use more data from wikipedia by modifying `extractWikiData.py`.
-One simple way to do this would be to add to the array of pages, e.g.
-`pages = ["Gold","Oil","Gas","Raw material","Farming","Fishing","Mining","Market economy"]`
+You can add more data from wikipedia by using the command flag `-d <pageName>`, where `<pageName>` is the name of the wikipedia page that you want to download.
 
 ***
 
 # QAWeb
-Similar to QACLI but instead of answering questions through the CLI questions are asked and answered on a website.
-Question and answers are not saved to a dictionary in this version, however this will be implemented in future versions.
+Similar to QACLI but instead of answering questions through the CLI questions are asked and answered on a website via a form using express, redis and workers. 
 
 ## Prerequisites
-Same as QACLI plus more:
-* [Express](https://expressjs.com/)
-* [EJS](https://ejs.co/)
+Same as QACLI plus:
+* [redis](https://redis.io/download)
 
 ## Quickstart
-1. run ``npm install``
-2. run ``npm start`` and goto ``https://localhost:5000``
-=======
-# QA with Background Workers in Node.js with Redis
+1. run `npm install`
+2. run `npm start` and goto `https://localhost:5000`
+
+## QA with Background Workers in Node.js with Redis
 
 Uses two bull queues to do the background work,
 with one queue used to add the question and file name

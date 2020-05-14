@@ -1,7 +1,7 @@
 {
-  "name": "qacli",
-  "version": "1.0.0",
-  "description": "",
+  "name": "QACLI",
+  "version": "0.1.2",
+  "description": "A simple program for answering open questions using Question Answering as a bnackbone and Wikipedia as a data source.",
   "main": "scripts/QuestionAnswerer.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -12,11 +12,13 @@
   "engines": {
     "node": "12.16.2"
   },
-  "author": "",
+  "author": "Sir-Ignis",
   "license": "ISC",
   "dependencies": {
     "child_process": "^1.0.2",
+    "commander": "^5.1.0",
     "minimist": "^1.2.5",
+    "python-shell": "^2.0.0",
     "question-answering": "^2.0.1"
   }
 }

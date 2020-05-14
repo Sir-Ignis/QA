@@ -1,0 +1,1 @@
+Gold,Oil,Gas,Raw material,Farming,Fishing,Mining,Wheat,Sugar,Trade,Money,Crude oil,Tax,Stock market,Stock exchange,Short (finance),Option (finance),Coins,Silver,Platinum,Bonds finance
