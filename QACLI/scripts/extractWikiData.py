@@ -3,7 +3,7 @@ import os.path
 import sys
 
 global DIR
-DIR = "data/txt/";
+DIR = "data/txt/wikipedia/";
 global PATH
 PATH = "data/txt/pages.txt"
 

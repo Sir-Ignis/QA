@@ -1,5 +1,5 @@
 /**
-@version 0.1.2
+@version 0.1.3
 @author Sir-Ignis
 
 This is an open domain question answering (ODQA)
@@ -8,15 +8,17 @@ model as a backend/abstraction to answer questions
 about stored wikipedia articles.
 */
 
-
 const fs = require('fs');
 const util = require('util');
 const DIR = 'data/txt/';
+const WIKI = 'data/txt/wikipedia/';
 const PATH = 'data/dict.json';
+const CONFIG = 'data/.config';
 const prompt = require('prompt-sync')();
 const {PythonShell} = require('python-shell');
 const { program } = require('commander');
 
+let PYTHON_PATH = '';
 let MODE = "default";
 let HIDE_TF_OUTPUT = true;
 let SHOW_REF_TEXT = false;
@@ -28,18 +30,12 @@ const STAR_TRAIL = "***************";
 //holds question (key) and answers (value) pairs
 let dict = {};
 
-/*
-PythonShell.run('extractWikiData.py', options, function (err, results) {
-  console.log('here5');
-    if (err) {reject(err); throw err;}
-    // results is an array consisting of messages collected during execution
-    console.log('script results:');
-    results.forEach(function (item, index) {
-      console.log(item, index);
-    });
-  console.log('here6');
-});
-resolve("resolved")*/
+console.log(TF_MSG);
+let { QAClient } = require("question-answering");
+console.log(STAR_TRAIL);
+if(HIDE_TF_OUTPUT) {
+  console.clear();
+}
 
 //help
 program
@@ -58,6 +54,7 @@ program
  * Entry point
  ***************/
  (async () => {
+  getConfig();
   if(process.argv.length > 0) {
     try {
       await initialize();
@@ -65,29 +62,34 @@ program
       console.log(err);
     }
   }
-  console.log(TF_MSG);
-  const { QAClient } = require("question-answering");
-  console.log(STAR_TRAIL);
-  if(HIDE_TF_OUTPUT) {
-    console.clear();
-  }
 
   main();
 })();
 
 /****************/
 
-async function callPythonScript() {
+function getConfig() {
+  fs.readFile(CONFIG, "utf8", (err, data) => {
+  if(err){console.log(err);}else{
+    data = data.split("\n"); // split the document into lines
+    data.length = 1;    // set the total number of lines to 2
+    console.log(data); //Array containing the 2 lines
+    PYTHON_PATH = data[0].substring('python is '.length);
+  }
+  });
+}
+
+async function callPythonScript(scriptName, arg) {
   let messages = []
   let options = {
       mode: 'text',
-      pythonPath: '/home/daniel/anaconda3/bin/python3',
+      pythonPath: PYTHON_PATH,
       pythonOptions: ['-u'], // get print results in real-time
       scriptPath: 'scripts/',
-      args: [program.download]
+      args: [arg]
   };
 
-  let pyshell = new PythonShell('extractWikiData.py',options);
+  let pyshell = new PythonShell(scriptName,options);
 
   pyshell.on('message', function (message) {
     console.log("[python output]: "+message);
@@ -113,7 +115,6 @@ async function callPythonScript() {
   });
 }
 
-
 /**
  * initializes the program options
  */
@@ -128,8 +129,16 @@ async function initialize() {
     await advancedOptions();
   }
   if(program.download != null) {
-    await callPythonScript();
-    prompt("\nPress enter to continue...");
+    await callPythonScript('extractWikiData.py', program.download);
+    if(program.standard === false && program.advanced === false) {
+      console.log('\n');
+      prompt("Press enter to exit..");
+      process.exit(0);
+    } else {
+      console.log('\n');
+      prompt("Press enter to continue...");
+      console.clear();
+    }
   }
 }
 
@@ -182,13 +191,13 @@ function advancedOptions() {
 }
 
 /**
- * choose a file from DIR
+ * choose a file from WIKI
  * @return {string} the filename or none
  * if no file is chosen
  */
 function chooseFile() {
   console.log("\n*******\n*FILES*\n*******");
-  const files = fs.readdirSync(DIR);
+  const files = fs.readdirSync(WIKI);
   for (var i = 0; i < files.length; i++) {
     console.log(files[i]);
   }
@@ -212,7 +221,7 @@ function updateDictFile(dict) {
    *pair to the dict and update the json file*/
   const savedDict = JSON.parse(fs.readFileSync(PATH));
   for (var key in dict) {
-    if (!(key in savedDict) && (savedDict.key = dict[key])) {
+    if (!(key in savedDict)) {
       savedDict[key] = dict[key];
     }
   }
@@ -262,7 +271,7 @@ async function addToDict(text, question, savedDict) {
  * questions
  */
 async function answer(fileName) {
-  const fileData = fs.readFileSync(DIR + fileName, "utf8");
+  const fileData = fs.readFileSync(WIKI + fileName, "utf8");
   const text = fileData;
 
   if (SHOW_REF_TEXT) {
@@ -291,7 +300,7 @@ async function answer(fileName) {
  * @param  {[type]} question
  */
 async function answerQuestion(fileName, question) {
-  const fileData = fs.readFileSync(DIR + fileName, "utf8");
+  const fileData = fs.readFileSync(WIKI + fileName, "utf8");
   const text = fileData;
 
   if (SHOW_REF_TEXT) {
@@ -303,43 +312,24 @@ async function answerQuestion(fileName, question) {
   await addToDict(text, question, savedDict);
 }
 
-/**
- * returns the file name to use as reference
- * for the question based on the keywords in
- * the question
- * @param  {[type]} question
- * @return {[type]} file name
- */
-function parseQuestion(question) {
-  var files = fs.readdirSync(DIR);
-  for (var i = 0; i < files.length; i++) {
-    if (question.includes(files[i].slice(0, -4).toLowerCase())) {
-      return files[i];
+async function getFile(question) {
+  const output = await callPythonScript('findFile.py', question);
+  for(var str of output) {
+    if(str.includes('FOUND')) {
+      return str.substring(6);
     }
   }
-  if (question.includes("farmed") || question.includes("farms")) {
-    return "Farming.txt";
-  } else if (question.includes("fished") || question.includes("fish")) {
-    return "Fishing.txt";
-  } else if (question.includes("gases")) {
-    return "Gas.txt";
-  } else if (question.includes("mine") || question.includes("mined")) {
-    return "Mining.txt";
-  } else if (question.includes("material")) {
-    return "Raw material.txt";
-  }
-  return "none";
 }
 
 /**
  * @return {Array} file name and question as an
  * array
  */
-function fetchFileAndQuestion() {
+async function fetchFileAndQuestion() {
   const question = prompt('Enter your question: ').toLowerCase();
   var fileName = "none";
   if (String(question) != "none") {
-    fileName = parseQuestion(question);
+    fileName = await getFile(question);
   }
   return [fileName, question];
 }
@@ -361,7 +351,7 @@ async function fileMode() {
 async function defaultMode() {
   var data = [];
   do {
-    var data = fetchFileAndQuestion();
+    var data = await fetchFileAndQuestion();
     if (data[0] != "none" && data[1] != "none") {
       await answerQuestion(data[0], data[1]);
     } else if (data[1] != "none") {
