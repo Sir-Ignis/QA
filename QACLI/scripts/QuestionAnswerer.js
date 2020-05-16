@@ -1,5 +1,5 @@
 /**
-@version 0.1.3
+@version 0.1.4
 @author Sir-Ignis
 
 This is an open domain question answering (ODQA)
@@ -27,15 +27,22 @@ let SHOW_CERT = false;
 
 const TF_MSG = "\n***TF OUTPUT***";
 const STAR_TRAIL = "***************";
+//used to check if either any key or Ctrl+C was pressed
+const keypress = async () => {
+  process.stdin.setRawMode(true)
+  return new Promise(resolve => process.stdin.once('data', data => {
+    const byteArray = [...data]
+    if (byteArray.length > 0 && byteArray[0] === 3) {
+      console.log('^C')
+      process.exit(1)
+    }
+    process.stdin.setRawMode(false)
+    resolve()
+  }))
+}
+
 //holds question (key) and answers (value) pairs
 let dict = {};
-
-console.log(TF_MSG);
-let { QAClient } = require("question-answering");
-console.log(STAR_TRAIL);
-if(HIDE_TF_OUTPUT) {
-  console.clear();
-}
 
 //help
 program
@@ -53,6 +60,13 @@ program
 /****************
  * Entry point
  ***************/
+ console.log(TF_MSG);
+ let { QAClient } = require("question-answering");
+ console.log(STAR_TRAIL);
+ if(HIDE_TF_OUTPUT) {
+   console.clear();
+ }
+
  (async () => {
   getConfig();
   if(process.argv.length > 0) {
@@ -68,17 +82,36 @@ program
 
 /****************/
 
+/**
+ * prints out Banner.txt
+ */
+function printBanner() {
+  const fileData = fs.readFileSync(DIR + "Banner.txt", "utf8");
+  const text = fileData;
+  console.clear();
+  console.log(text);
+}
+
+/**
+ * assigns the python path in config to PYTHON_PATH
+ */
 function getConfig() {
   fs.readFile(CONFIG, "utf8", (err, data) => {
   if(err){console.log(err);}else{
-    data = data.split("\n"); // split the document into lines
-    data.length = 1;    // set the total number of lines to 2
-    console.log(data); //Array containing the 2 lines
+    data = data.split("\n");
+    data.length = 1;
     PYTHON_PATH = data[0].substring('python is '.length);
   }
   });
 }
 
+/**
+ * runs python scriptName with arg
+ * @param  {string} scriptName
+ * @param  {string} arg
+ * @return {Promise} if resolved returns an array of messages
+ *                   else rejected then returns an error
+ */
 async function callPythonScript(scriptName, arg) {
   let messages = []
   let options = {
@@ -119,8 +152,25 @@ async function callPythonScript(scriptName, arg) {
  * initializes the program options
  */
 async function initialize() {
+  if(process.argv.length < 3) {
+    await Menu();
+
+    const option = prompt('Option: ');
+
+    if(option === 'h') {
+      await help();
+      console.clear();
+    } else if(option === 'e') {
+      console.clear();
+      process.exit(0);
+    } else {
+      //otherwise clear screen and go to main()
+      console.clear();
+    }
+  }
   if(program.help === true) {
     await help();
+    console.clear();
   }
   if (program.standard) {
     await standardOptions();
@@ -129,29 +179,45 @@ async function initialize() {
     await advancedOptions();
   }
   if(program.download != null) {
+    printBanner();
     await callPythonScript('extractWikiData.py', program.download);
     if(program.standard === false && program.advanced === false) {
       console.log('\n');
-      prompt("Press enter to exit..");
+      console.log("Press any key to exit..");
+      await keypress();
       process.exit(0);
     } else {
       console.log('\n');
-      prompt("Press enter to continue...");
+      console.log("Press any key to continue..");
+      await keypress();
       console.clear();
     }
   }
+
+}
+/**
+ * prints Banner.txt followed by Menu.txt
+ */
+function Menu() {
+  const fileData = fs.readFileSync(DIR + "Menu.txt", "utf8");
+  const text = fileData;
+  console.clear();
+  printBanner();
+  console.log(text);
+  return Promise.resolve();
 }
 
 /**
  * prints command line arg info
  */
-function help() {
+async function help() {
   const fileData = fs.readFileSync(DIR + "CommandOptions.txt", "utf8");
   const text = fileData;
   console.clear();
+  printBanner();
   console.log('\n'+text+'\n');
-  prompt('Press enter to continue...');
-  return Promise.resolve();
+  console.log("Press any key to continue..");
+  await keypress();
 }
 
 /**
@@ -231,9 +297,9 @@ function updateDictFile(dict) {
 /**
  * adds the questions and answer to the dict
  * if answer certainity > MIN_ANS_CERT
- * @param {[type]} text      from .txt file
- * @param {[type]} question  that the user asked
- * @param {[type]} savedDict stored dict.json
+ * @param {string} text from .txt file
+ * @param {string} question that the user asked
+ * @param {dictionary} savedDict stored dict.json
  */
 async function addToDict(text, question, savedDict) {
   if (!(question in savedDict)) {
@@ -244,9 +310,10 @@ async function addToDict(text, question, savedDict) {
       console.clear();
     }
 
-    console.time("Fetched answer in: ");
+    console.time("Fetched answer in");
     const answer = await qaClient.predict(question, text);
-    console.timeEnd("Fetched answer in: ");
+    console.timeEnd("Fetched answer in");
+    console.log('Question: '+question);
 
     const answerStr = Object.values(answer)[0];
     const certainty = Object.values(answer)[1] * 100;
@@ -262,6 +329,9 @@ async function addToDict(text, question, savedDict) {
   } else {
     console.log('Answer: ' + savedDict[question]);
   }
+  console.log("Press any key to continue..");
+  await keypress();
+  console.clear();
 }
 
 /**
@@ -282,12 +352,12 @@ async function answer(fileName) {
   const savedDict = JSON.parse(fs.readFileSync(PATH));
 
   while (true) {
-    console.log("\n")
     const question = prompt('Enter your question: ');
     if (String(question) === "none") {
       updateDictFile(dict);
       console.log("exiting...");
-      return Promise.resolve("exit");
+      //return Promise.resolve("exit");
+      process.exit(0);
     }
     await addToDict(text, question, savedDict);
   }
@@ -296,8 +366,8 @@ async function answer(fileName) {
 /**
  * add the question and answer key value pair
  * to the dictionary
- * @param  {[type]} fileName
- * @param  {[type]} question
+ * @param  {string} fileName
+ * @param  {string} question
  */
 async function answerQuestion(fileName, question) {
   const fileData = fs.readFileSync(WIKI + fileName, "utf8");
@@ -312,6 +382,11 @@ async function answerQuestion(fileName, question) {
   await addToDict(text, question, savedDict);
 }
 
+/**
+ * gets data txt file if found from question
+ * @param  {string} question
+ * @return {string} found file
+ */
 async function getFile(question) {
   const output = await callPythonScript('findFile.py', question);
   for(var str of output) {
@@ -330,6 +405,10 @@ async function fetchFileAndQuestion() {
   var fileName = "none";
   if (String(question) != "none") {
     fileName = await getFile(question);
+  }
+  if (typeof fileName === 'undefined') {
+    console.log('Error! File undefined. Exiting...');
+    process.exit(0);
   }
   return [fileName, question];
 }
@@ -356,6 +435,8 @@ async function defaultMode() {
       await answerQuestion(data[0], data[1]);
     } else if (data[1] != "none") {
       console.log("I do not understand your question.\n");
+    } else if (data[1] === "none") {
+      process.exit(0);
     }
   } while (data[1] != "none");
 }

@@ -8,6 +8,7 @@ so if the same question is asked again the system does not have to recompute the
 ## Prerequisites
 * [npm](https://www.npmjs.com/)
 * [nodejs](https://nodejs.org/en/)
+* [python](https://www.python.org/downloads/)
 
 ## Quickstart
 ```
@@ -23,7 +24,10 @@ Answer: pre-historic times with 83% certainty
 ```
 
 ## Command line flags
-Type `scripts/QuestionAnswerer.js -h` to get info about using command line flags.
+Type `scripts/QuestionAnswerer.js -h` to get info about using command line flags. Example:
+```
+node scripts/QuestionAnswerer.js -d "Free trade" -a -m file -tf true -rt false -sac true
+```
 
 ## Using other data
 You can add more data from wikipedia by using the command flag `-d <pageName>`, where `<pageName>` is the name of the wikipedia page that you want to download.
@@ -31,7 +35,7 @@ You can add more data from wikipedia by using the command flag `-d <pageName>`, 
 ***
 
 # QAWeb
-Similar to QACLI but instead of answering questions through the CLI questions are asked and answered on a website via a form using express, redis and workers. 
+Similar to QACLI but instead of answering questions through the CLI questions are asked and answered on a website via a form using express, redis and workers.
 
 ## Prerequisites
 Same as QACLI plus:

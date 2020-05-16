@@ -1,6 +1,6 @@
 {
   "name": "QACLI",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "A simple program for answering open questions using Question Answering as a bnackbone and Wikipedia as a data source.",
   "main": "scripts/QuestionAnswerer.js",
   "scripts": {
